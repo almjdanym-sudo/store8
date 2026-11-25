@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>متجر أوتاكو ستور - عالم الأنمي</title>
+    <link href="https://googleapis.com" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #ff2a6d;
+            --secondary: #05d9e8;
+            --bg-dark: #0d0e15;
+            --card-bg: #171926;
+            --text-light: #f1f1f1;
+            --text-muted: #a0a0b0;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Cairo', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-light);
+            line-height: 1.6;
+        }
+
+        header {
+            background-color: rgba(23, 25, 38, 0.95);
+            padding: 15px 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            border-bottom: 2px solid var(--primary);
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .logo {
+            font-size: 26px;
+            font-weight: 900;
+            color: var(--secondary);
+            text-shadow: 0 0 10px rgba(5, 217, 232, 0.5);
+        }
+
+        .logo span {
+            color: var(--primary);
+        }
+
+        nav ul {
+            list-style: none;
+            display: flex;
+            gap: 15px;
+        }
+
+        nav button {
+            background: none;
+            border: none;
+            color: var(--text-light);
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            padding: 8px 15px;
+            border-radius: 8px;
+            transition: 0.3s;
+        }
+
+        nav button:hover, nav button.active {
+            background-color: var(--primary);
+            color: white;
+        }
+
+        .cart-btn {
+            background-color: var(--secondary);
+            color: var(--bg-dark);
+            border: none;
+            padding: 8px 18px;
+            border-radius: 25px;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: 0.3s;
+        }
+
+        .cart-btn:hover {
+            transform: scale(1.05);
+        }
+
+        .page {
+            display: none;
+            padding: 40px 5%;
+            min-height: 85vh;
+            animation: fadeIn 0.4s ease-in-out;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .hero {
+            text-align: center;
+            padding: 60px 20px;
+            background: linear-gradient(135deg, rgba(255,42,109,0.15), rgba(5,217,232,0.15));
+            border-radius: 20px;
+            border: 1px solid rgba(255,255,255,0.1);
+            margin-bottom: 40px;
+        }
+
+        .hero h1 {
+            font-size: 38px;
+            margin-bottom: 15px;
+            color: white;
+        }
+
+        .hero p {
+            font-size: 18px;
+            color: var(--text-muted);
+            max-width: 700px;
+            margin: 0 auto 30px;
+        }
+
+        .cta-btn {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            font-size: 18px;
+            font-weight: bold;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .cta-btn:hover {
+            box-shadow: 0 0 20px var(--primary);
+        }
+
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 25px;
+        }
+
+        .feature-card {
+            background-color: var(--card-bg);
+            padding: 25px;
+            border-radius: 15px;
+            text-align: center;
+            border-top: 3px solid var(--secondary);
+        }
+
+        .feature-card h3 {
+            margin-bottom: 10px;
+            color: var(--secondary);
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 30px;
+            margin-bottom: 35px;
+            color: var(--secondary);
+        }
+
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 25px;
+        }
+
+        .product-card {
+            background-color: var(--card-bg);
+            border-radius: 15px;
+            overflow: hidden;
+            transition: 0.3s;
+            border: 1px solid rgba(255,255,255,0.05);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .product-card:hover {
+            transform: translateY(-8px);
+            border-color: var(--primary);
+        }
+
+        .product-img {
+            width: 100%;
+            height: 230px;
+            object-fit: cover;
+            background-color: #222538;
+        }
+
+        .product-info {
+            padding: 20px;
+        }
+
+        .anime-tag {
+            background-color: rgba(5, 217, 232, 0.15);
+            color: var(--secondary);
+            padding: 3px 10px;
+            border-radius: 5px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .product-title {
+            font-size: 19px;
+            margin: 10px 0;
+        }
+
+        .product-price {
+            font-size: 20px;
+            font-weight: 900;
+            color: var(--primary);
+            margin-bottom: 15px;
+        }
+
+        .add-btn {
+            width: 100%;
+            padding: 10px;
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .add-btn:hover {
+            background-color: #d61c58;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.8);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background-color: var(--card-bg);
+            padding: 30px;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 500px;
+            max-height: 85vh;
+            overflow-y: auto;
+            border: 2px solid var(--secondary);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #333;
+            padding-bottom: 15px;
+            margin-bottom: 20px;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 28px;
+            cursor: pointer;
+        }
+
+        .cart-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid #2a2d3d;
+        }
+
+        .remove-item {
+            background: #ff4d4d;
+            color: white;
+            border: none;
+            padding: 4px 10px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .checkout-form input {
+            width: 100%;
+            padding: 10px;
+            margin: 8px 0;
+            border-radius: 8px;
+            border: 1px solid #444;
+            background: var(--bg-dark);
+            color: white;
+        }
+
+        .total-box {
+            font-size: 20px;
+            font-weight: bold;
+            margin: 20px 0;
+            text-align: left;
+            color: var(--secondary);
+        }
+
+        footer {
+            text-align: center;
+            padding: 20px;
+            background-color: var(--card-bg);
+            color: var(--text-muted);
+            margin-top: 40px;
+            border-top: 1px solid #222;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="logo">OTAKU<span>STORE</span></div>
+        <nav>
+            <ul>
+                <li><button id="btn-home" class="nav-btn active" onclick="showPage('home')">الرئيسية</button></li>
+                <li><button id="btn-clothes" class="nav-btn" onclick="showPage('clothes')">ملابس الأنمي</button></li>
+                <li><button id="btn-collectibles" class="nav-btn" onclick="showPage('collectibles')">فيقرز وألعاب وكتب</button></li>
+            </ul>
+        </nav>
+        <button class="cart-btn" onclick="toggleCart()">
+            🛒 السلة (<span id="cart-count">0</span>)
+        </button>
+    </header>
+
+    <section id="home" class="page active">
+        <div class="hero">
+            <h1>مرحباً بك في وجهتك الأولى لعالم الأنمي! 🎌</h1>
+            <p>نحن متجر متخصص في توفير أندر وأجمل مقتنيات الأنمي الأصلية. من الملابس العصرية المطبوعة بأشهر الشخصيات، إلى مجسمات (الفيقرز) الدقيقة، المانجا، والألعاب الترفيهية.</p>
+            <button class="cta-btn" onclick="showPage('clothes')">تصفح الملابس الآن</button>
+        </div>
+
+        <div class="features">
+            <div class="feature-card">
+                <h3>👕 ملابس بجودة عالية</h3>
+                <p>هوديز وتيشيرتات قطنية 100% بطباعة حرارية لا تتأثر بالغسيل لأشهر الأنميات.</p>
+            </div>
+            <div class="feature-card">
+                <h3>🗿 مجسمات وفيقرز أصلية</h3>
+                <p>تشكيلة واسعة من الفيقرز بتفاصيل مذهلة تزين غرفتك ومكتبك.</p>
+            </div>
+            <div class="feature-card">
+                <h3>📚 مانجا وألعاب وجوائز</h3>
+                <p>مجلدات مانجا مترجمة، ألعاب لوحية، وصناديق مفاجآت وجوائز حصرية للأوتاكو.</p>
+            </div>
+        </div>
+    </section>
+
+    <section id="clothes" class="page">
+        <h2 class="section-title">👕 ملابس برسومات أشهر الأنميات</h2>
+        <div class="products-grid" id="clothes-grid"></div>
+    </section>
+
+    <section id="collectibles" class="page">
+        <h2 class="section-title">🎮 فيقرز، ألعاب، كتب مانجا، وجوائز</h2>
+        <div class="products-grid" id="collectibles-grid"></div>
+    </section>
+
+    <div id="cart-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>🛒 سلة المشتريات</h3>
+                <button class="close-btn" onclick="toggleCart()">&times;</button>
+            </div>
+            
+            <div id="cart-items">
+                <p style="text-align:center; color:#888;">السلة فارغة حالياً</p>
+            </div>
+
+            <div class="total-box">
+                الإجمالي: <span id="cart-total">0</span> ريال
+            </div>
+
+            <form class="checkout-form" onsubmit="completeOrder(event)">
+                <h4>بيانات الشحن والدفع:</h4>
+                <input type="text" placeholder="الاسم الكامل" required>
+                <input type="text" placeholder="المدينة والحي" required>
+                <input type="tel" placeholder="رقم الجوال" required>
+                <input type="text" placeholder="رقم البطاقة البنكية (تجريبي)" required>
+                <button type="submit" class="add-btn" style="margin-top:10px; background-color: var(--secondary); color: #000;">إتمام الطلب والدفع ✅</button>
+            </form>
+        </div>
+    </div>
+
+    <footer>
+        <p>جميع الحقوق محفوظة لمتجر أوتاكو ستور &copy; 2026</p>
+    </footer>
+
+    <script>
+        const clothesProducts = [
+            { id: 1, name: "هودي لوفي الجير الخامس", anime: "ون بيس", price: 149, img: "https://placehold.co" },
+            { id: 2, name: "تيشيرت غوجو ساتورو", anime: "جوجوتسو كايسن", price: 89, img: "https://placehold.co" },
+            { id: 3, name: "جاكيت فيلق الاستطلاع", anime: "هجوم العمالقة", price: 179, img: "https://placehold.co" },
+            { id: 4, name: "هودي إيتاتشي أوتشيها", anime: "ناروتو شيبودن", price: 139, img: "https://placehold.co" }
+        ];
+
+        const collectiblesProducts = [
+            { id: 5, name: "فيقر زورو السيوف الثلاثة", anime: "ون بيس", price: 220, img: "https://placehold.co" },
+            { id: 6, name: "صندوق جوائز الأوتاكو الغامض", anime: "منوع", price: 199, img: "https://placehold.co" },
+            { id: 7, name: "مجموعة مانجا قاتل الشياطين (1-5)", anime: "قاتل الشياطين", price: 165, img: "https://placehold.co" },
+            { id: 8, name: "لعبة ورق تحدي الأنمي الجماعية", anime: "ألعاب", price: 75, img: "https://placehold.co" }
+        ];
+
+        let cart = [];
+
+        function renderProducts() {
+            const clothesGrid = document.getElementById('clothes-grid');
+            const collectiblesGrid = document.getElementById('collectibles-grid');
+
+            clothesGrid.innerHTML = '';
+            collectiblesGrid.innerHTML = '';
+
+            clothesProducts.forEach(item => {
+                clothesGrid.innerHTML += createProductCard(item);
+            });
+
+            collectiblesProducts.forEach(item => {
+                collectiblesGrid.innerHTML += createProductCard(item);
+            });
+        }
+
+        function createProductCard(item) {
+            return `
+                <div class="product-card">
+                    <img src="${item.img}" alt="${item.name}" class="product-img">
+                    <div class="product-info">
+                        <span class="anime-tag">${item.anime}</span>
+                        <h3 class="product-title">${item.name}</h3>
+                        <div class="product-price">${item.price} ريال</div>
+                        <button class="add-btn" onclick="addToCart(${item.id})">أضف إلى السلة 🛒</button>
+                    </div>
+                </div>
+            `;
+        }
+
+        function showPage(pageId) {
+            document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
+            document.getElementById(pageId).classList.add('active');
+
+            document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
+            document.getElementById('btn-' + pageId).classList.add('active');
+        }
+
+        function addToCart(productId) {
+            const allProducts = [...clothesProducts, ...collectiblesProducts];
+            const product = allProducts.find(p => p.id === productId);
+            if (product) {
+                cart.push(product);
+                updateCartUI();
+                alert(`تمت إضافة "${product.name}" إلى السلة!`);
+            }
+        }
+
+        function updateCartUI() {
+            document.getElementById('cart-count').innerText = cart.length;
+            const cartItemsContainer = document.getElementById('cart-items');
+            const cartTotalElement = document.getElementById('cart-total');
+
+            if (cart.length === 0) {
+                cartItemsContainer.innerHTML = '<p style="text-align:center; color:#888;">السلة فارغة حالياً</p>';
+                cartTotalElement.innerText = '0';
+                return;
+            }
+
+            let total = 0;
+            cartItemsContainer.innerHTML = '';
+
+            cart.forEach((item, index) => {
+                total += item.price;
+                cartItemsContainer.innerHTML += `
+                    <div class="cart-item">
+                        <div>
+                            <strong>${item.name}</strong><br>
+                            <small style="color:var(--secondary)">${item.price} ريال</small>
+                        </div>
+                        <button class="remove-item" onclick="removeFromCart(${index})">حذف</button>
+                    </div>
+                `;
+            });
+
+            cartTotalElement.innerText = total;
+        }
+
+        function removeFromCart(index) {
+            cart.splice(index, 1);
+            updateCartUI();
+        }
+
+        function toggleCart() {
+            const modal = document.getElementById('cart-modal');
+            modal.style.display = modal.style.display === 'flex' ? 'none' : 'flex';
+        }
+
+        function completeOrder(event) {
+            event.preventDefault();
+            if (cart.length === 0) {
+                alert("السلة فارغة! أضف منتجات أولاً.");
+                return;
+            }
+            alert("🎉 تم استلام طلبك بنجاح! شكراً لتسوقك من متجر أوتاكو ستور.");
+            cart = [];
+            updateCartUI();
+            toggleCart();
+        }
+
+        renderProducts();
+    </script>
+</body>
+</html>
